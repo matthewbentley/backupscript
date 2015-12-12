@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 source ./vars
 
 if [[ $EUID -ne 0 ]]; then
@@ -28,7 +30,7 @@ for location in "${!backup[@]}"; do
 
     if [ $type == "full" -o $type == "incremental" ]; then
         echo "Backing up ${backup["$location"]} to $location"
-        $duplicity $type "${backup["$location"]}" "b2://${account}@${bucket}/${location}"
+        $duplicity $type "${backup["$location"]}" "b2://${account}@${bucket}/${location}" &
     fi
 
     if [[ $type == "remove-all-but-n-full" ]]; then
@@ -37,3 +39,5 @@ for location in "${!backup[@]}"; do
     fi
 
 done
+
+wait
