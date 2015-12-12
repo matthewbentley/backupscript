@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+declare -A backup
+
+backup=(
+    ["etc"]="/etc"
+    ["projects"]="/home/matthew/projects"
+    ["root"]="/root"
+    ["sync"]="/home/matthew/sync"
+)
+
+account="account_id"
+bucket="bucket_name"
+duplicity=/usr/bin/duplicity
+
+export FTP_PASSWORD="application_key"
+export PASSPHRASE="gpg_passphrase"
+export SIGN_PASSPHRASE="gpg_passphrase"
