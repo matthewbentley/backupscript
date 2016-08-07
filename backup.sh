@@ -33,6 +33,11 @@ for location in "${!backup[@]}"; do
         $duplicity $type "${backup["$location"]}" "b2://${account}@${bucket}/${location}" &
     fi
 
+    if [[ $type == "cleanup" ]]; then
+        echo "Cleaning up $location"
+        $duplicity $type "b2://${account}@${bucket}/${location} $2"
+    fi
+
     if [[ $type == "remove-all-but-n-full" ]]; then
         echo "Removing all but $num from $location"
         $duplicity $type $num --force "b2://${account}@${bucket}/${location}"
