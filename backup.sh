@@ -38,6 +38,11 @@ for location in "${!backup[@]}"; do
         $duplicity $type "b2://${account}@${bucket}/${location} $2"
     fi
 
+    if [[ $type == "verify" ]]; then
+        echo "Verifying $location"
+        $duplicity $type "b2://${account}@${bucket}/${location}" "${backup["$location"]}"
+    fi
+
     if [[ $type == "remove-all-but-n-full" ]]; then
         echo "Removing all but $num from $location"
         $duplicity $type $num --force "b2://${account}@${bucket}/${location}"
