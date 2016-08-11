@@ -24,13 +24,16 @@ fi
 
 type=$1
 
-echo $duplicity
-
 for location in "${!backup[@]}"; do
 
     if [ $type == "full" -o $type == "incremental" ]; then
         echo "Backing up ${backup["$location"]} to $location"
-        $duplicity $type "${backup["$location"]}" "b2://${account}@${bucket}/${location}" &
+        $duplicity $type \
+            "${backup["$location"]}" \
+            "b2://${account}@${bucket}/${location}" | \
+            while read f; do
+                echo $location: $f;
+            done &
     fi
 
     if [[ $type == "cleanup" ]]; then
