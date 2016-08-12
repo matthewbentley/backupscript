@@ -22,6 +22,14 @@ if [[ $1 == "remove-all-but-n-full" ]]; then
     num=$2
 fi
 
+if [[ $1 == "restore" ]]; then
+    if [[ $2 == "" ]]; then
+        echo "You must specify a restore target directory if using \"restore\""
+        exit 1;
+    fi
+    target=$2
+fi
+
 type=$1
 
 for location in "${!backup[@]}"; do
@@ -49,6 +57,17 @@ for location in "${!backup[@]}"; do
     if [[ $type == "remove-all-but-n-full" ]]; then
         echo "Removing all but $num from $location"
         $duplicity $type $num --force "b2://${account}@${bucket}/${location}"
+    fi
+
+    if [[ $type == "restore" ]]; then
+        echo "Restoring $location to ${target}/${backup["$location"]}"
+        mkdir -p $(dirname ${target}/${backup["$location"]})
+        $duplicity $type \
+            "b2://${account}@${bucket}/${location}" \
+            "${target}/${backup["$location"]}" | \
+            while read f; do
+                echo $location: $f;
+            done &
     fi
 
 done
